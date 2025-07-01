@@ -1,0 +1,15 @@
+#Isolando as dependencias (pra não quebrar o codigo kkkkkk)
+venv/
+*.sqlite3
+.env
+_pycache_/
+*.py[cod]
+*.log
+*.pot
+*.pyc
+.vscode/
+.idea/
+
+#
+*/migrations/_pycache_/
+*.py[cod]
