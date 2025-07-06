@@ -10,20 +10,22 @@
 </head>
 <body>
     <header>
-        <nav>
+        <div class= "nav">
              <a href="{% url 'home' %}">Home</a> 
             {% if user.is_authenticated %} 
                 <span>Olá, {{ user.username }}!</span> 
                 <a href="{% url 'logout' %}">Sair</a>
+                <a href="{% url 'produtos' %}">Produtos</a>
             {% else %} 
                 <a href="{% url 'cadastro' %}">Cadastro</a>
                 <a href="{% url 'login' %}">Login</a>
+               
             {% endif %}
             
         </nav>
     </header>
 
-    <main>
+    <div class="main">
        
         {% block content %}
         {% endblock %}

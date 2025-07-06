@@ -1,0 +1,26 @@
+{% extends "ecommerce/base_padrao.html" %}
+
+{%block title%}Nossos Produtos{% endblock %}
+
+{% block content %}
+    <h1>Lista de Produtos</h1>
+    {% if produtos %}
+        <ul>
+            {% for produto in produtos %}
+            <li>
+                <h2>{{produto.nome}}</h2>
+                <p>Preço: R$ {{produto.preco}}</p>
+                <p>Estoque: {{produto.estoque}}</p>
+                {% if produto.imagem %}
+                    <img src="{{produto.imagem.url}}" alt= "{{produto.nome}}" witdh= 150>
+                {% endif %}
+                <p>{{produto.descricao}}</p>
+
+                <button>Adicionar ao carrinho</button>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Nenhum produto foi cadastrado.</p>
+{% endif %}
+{% endblock %}
