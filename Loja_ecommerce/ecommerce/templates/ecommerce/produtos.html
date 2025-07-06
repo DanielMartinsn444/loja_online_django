@@ -15,7 +15,8 @@
                     <img src="{{produto.imagem.url}}" alt= "{{produto.nome}}" witdh= 150>
                 {% endif %}
                 <p>{{produto.descricao}}</p>
-
+                 <form action="{% url 'adicionar_carrinho' produto.id %}" method="post">
+                    {% csrf_token %} 
                 <button>Adicionar ao carrinho</button>
             </li>
         {% endfor %}

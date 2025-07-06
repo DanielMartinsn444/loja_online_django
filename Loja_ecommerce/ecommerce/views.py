@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from .models import Produto, CartItem, Cart
-
+from django.http import JsonResponse, HttpResponse 
+from django.contrib.auth.decorators import login_required
 
 def cadastro_usuario(request):
     if request.method == "POST":
@@ -54,9 +55,56 @@ def home(request):
     return render(request, "ecommerce/home.html")
 
 
-def produto(request):
-    if request.method == "GET":
-        produtos = Produto.objects.all()
-        context = {"produtos": produtos}
+@login_required 
+def ver_carrinho(request):
+   
+    cart, created = Cart.objects.get_or_create(user=request.user)
 
-        return render(request, "ecommerce/produtos.html", context)
+   
+    cart_items = CartItem.objects.filter(cart=cart)
+
+    
+    total_carrinho = sum(item.get_total for item in cart_items) #criar API de pagamentos no carrinho
+    context = {
+        'cart': cart,
+        'cart_items': cart_items,
+        'total_carrinho': total_carrinho,
+    }
+    return render(request, 'ecommerce/carrinho.html', context)
+
+
+def lista_produtos(request):
+    produtos = Produto.objects.all()
+    context = {'produtos': produtos}
+    return render(request, 'ecommerce/produtos.html', context)
+
+
+@login_required
+def adicionar_carrinho(request, produto_id):
+    if request.method == "POST":
+        produto= get_object_or_404(Produto, id= produto_id)
+        cart, created= Cart.objects.get_or_create(user=request.user)
+        
+        cart_item, item_created= CartItem.objects.get_or_create(
+            cart= cart,
+            product= produto,
+            defaults={'quantity': 1, 'price': produto.preco}
+        )
+        if not item_created:
+         
+            if cart_item.quantity < produto.estoque:
+                cart_item.quantity += 1
+                cart_item.save()
+                mensagem = f"{produto.nome} adicionado(s) ao carrinho."
+            else:
+                mensagem = f"Estoque insuficiente para adicionar mais {produto.nome}."
+        else:
+            
+            if produto.estoque > 0:
+                mensagem = f"{produto.nome} adicionado ao carrinho pela primeira vez."
+            else:
+                cart_item.delete() 
+                mensagem = f"Estoque esgotado para {produto.nome}."
+                
+            return redirect('lista_produtos')
+    return redirect('lista_produtos')

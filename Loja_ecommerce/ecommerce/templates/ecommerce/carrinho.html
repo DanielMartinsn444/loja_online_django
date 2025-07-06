@@ -1,0 +1,25 @@
+{% extends "ecommerce/base_padrao.html" %}
+
+{% block title %}Seu Carrinho{% endblock %}
+
+{% block content %}
+    <h1>Seu Carrinho de Compras</h1>
+
+    {% if cart_items %}
+        <ul>
+            {% for item in cart_items %}
+            <li>
+                {{ item.quantity }} x {{ item.product.nome }} - R$ {{ item.product.preco|floatformat:2 }} cada
+                (Total: R$ {{ item.get_total|floatformat:2 }}) 
+              
+            </li>
+            {% endfor %}
+        </ul>
+        <h3>Total do Carrinho: R$ {{ total_carrinho|floatformat:2 }}</h3>
+       
+    {% else %}
+        <p>Seu carrinho está vazio.</p>
+    {% endif %}
+
+    <p><a href="{% url 'lista_produtos' %}">Continuar Comprando</a></p>
+{% endblock %}
