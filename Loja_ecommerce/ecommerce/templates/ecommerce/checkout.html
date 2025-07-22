@@ -1,0 +1,99 @@
+{% extends 'base_padrao.html' %} 
+{% load static %} 
+
+{% block title %}Pagamentos-WareShop{% endblock %} 
+
+{% block content %}
+<div class="checkout-container">
+    <h1>Finalizar Compra</h1>
+
+    {% if carrinho.get_cart_total > 0 %} 
+    <h2>Seu Pedido</h2>
+    <ul class="order-summary-list">
+        {% for item in carrinho.cartitem_set.all %} 
+        <li>
+            {{ item.product.nome }} x {{ item.quantity }} = R$ {{
+            item.get_total|floatformat:2 }} 
+        </li>
+        {% endfor %}
+    </ul>
+    <h3>Total a Pagar: R$ {{ carrinho.get_cart_total|floatformat:2 }}</h3> 
+
+    <div id="stripe-elements-container">
+        <div id="card-element"></div>
+
+        <div id="card-errors" role="alert"></div>
+
+        <form id="payment-form" data-client-secret="{{ client_secret }}">
+            {% csrf_token %}
+            <button id="submit-button" class="checkout-button">Pagar Agora</button>
+        </form>
+    </div>
+
+    {% else %}
+    <p>
+        Seu carrinho está vazio. Volte à
+        <a href="{% url 'lista_produtos' %}">loja</a> para adicionar produtos.
+    </p>
+    {% endif %}
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe("{{ stripe_publishable_key }}");
+    const elements = stripe.elements();
+    const card = elements.create("card");
+    card.mount("#card-element");
+
+    const form = document.getElementById("payment-form");
+    const clientSecret = form.dataset.clientSecret;
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        
+       // const returnUrl = "{% url 'pagamento_sucesso' %}"; 
+
+        const { error, paymentIntent } = await stripe.confirmCardPayment(
+            clientSecret,
+            {
+                payment_method: {
+                    card: card,
+                    billing_details: {
+                        name: "{{ request.user.username }}",
+                        email: "{{ request.user.email }}",
+                    },
+                },
+                // CORREÇÃO AQUI: return_url moveu para este nível
+               // return_url: returnUrl, conectar webhook aqui.//
+            }
+        );
+
+        if (error) {
+            const errorDisplay = document.getElementById("card-errors");
+            errorDisplay.textContent = error.message;
+        } else {
+            if (paymentIntent.status === "succeeded") {
+                window.location.href = "{% url 'pagamento_sucesso' %}";
+            }
+        }
+    });
+
+    //const urlParams = new URLSearchParams(window.location.search);
+    const clientSecretFromUrl = urlParams.get("payment_intent_client_secret");
+    if (clientSecretFromUrl) {
+        stripe
+            .retrievePaymentIntent(clientSecretFromUrl)
+            .then(({ paymentIntent }) => {
+                if (paymentIntent.status === "succeeded") {
+                    window.location.href = "{% url 'pagamento_sucesso' %}";
+                } else if (paymentIntent.status === "requires_payment_method") {
+                    document.getElementById("card-errors").textContent =
+                        "Seu cartão foi recusado. Por favor, tente outro.";
+                } else {
+                    document.getElementById("card-errors").textContent =
+                        "Ocorreu um erro no pagamento.";
+                }
+            });
+    }
+</script>
+{% endblock %}

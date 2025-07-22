@@ -76,3 +76,5 @@ class CartItem(models.Model):
         unique_together = ("cart", "product")
 
         ordering = ["cart", "product__nome"]
+
+#colocar as views para atualizar assim que o usuario colocar algo no carrinho, criar view pra finalizar compra através de API

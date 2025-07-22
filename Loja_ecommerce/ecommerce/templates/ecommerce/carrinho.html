@@ -1,4 +1,5 @@
 {% extends "ecommerce/base_padrao.html" %}
+{% load static %}
 
 {% block title %}Seu Carrinho{% endblock %}
 
@@ -6,17 +7,30 @@
     <h1>Seu Carrinho de Compras</h1>
 
     {% if cart_items %}
-        <ul>
+        <ul class="cart-items-list"> 
             {% for item in cart_items %}
-            <li>
-                {{ item.quantity }} x {{ item.product.nome }} - R$ {{ item.product.preco|floatformat:2 }} cada
-                (Total: R$ {{ item.get_total|floatformat:2 }}) 
-              
-            </li>
+                <li>
+                    <span class="item-details">
+                        {{ item.quantity }} x {{ item.product.nome }} - R$ {{ item.product.preco|floatformat:2 }} cada
+                        (Total: R$ {{ item.get_total|floatformat:2 }})
+                    </span>
+
+                    <form action="{% url 'remover_item_carrinho' item.id %}" method="post" class="remove-item-form">
+                        {% csrf_token %}
+                        <button type="submit" class="remove-button">Remover</button>
+                    </form>
+                </li>
             {% endfor %}
         </ul>
-        <h3>Total do Carrinho: R$ {{ total_carrinho|floatformat:2 }}</h3>
-       
+
+        <div class="cart-summary"> 
+            <h3>Total do Carrinho: R$ {{ total_carrinho|floatformat:2 }}</h3>
+
+            <form action="{% url 'checkout' %}" method="get"> 
+                <button type="submit" class="checkout-button">Finalizar Compra</button>
+            </form>
+        </div>
+
     {% else %}
         <p>Seu carrinho está vazio.</p>
     {% endif %}

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
+import stripe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,8 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
+STRIPE_PUBLISHABLE_KEY= "pk_test_51Rj5uJFwDyscJvCmyvpLGaiXqZrChOXfc2QWrbiaql2BYBaVETLqzZTRCj1NOWFz7hTreFW4v0XThndYR23sXL9900HJQdrGg1"
+STRIPE_SECRET_KEY= "sk_test_51Rj5uJFwDyscJvCmezFBy446ThlUg7J7uwHuqj85QvopLoE3HDj7NQdpYn4mnqUCbDVWmpU3WAQSLLpe4pllNir900dRR8Sobp"
 SECRET_KEY = config("SECRET_KEY")
 
+stripe.api_key= STRIPE_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
@@ -57,7 +62,7 @@ ROOT_URLCONF = "Loja_ecommerce.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR/"ecommerce/templates/ecommerce"],
+        "DIRS": [BASE_DIR / "ecommerce/templates/ecommerce"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

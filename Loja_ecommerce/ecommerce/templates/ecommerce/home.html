@@ -1,8 +1,42 @@
-{% extends 'ecommerce/base_padrao.html'%}
-{% load static %}
-{% block title %}Página Inicial da Loja{% endblock %}
 
-{% block content %} 
-    <h1>Essa é a home</h1>
-    <p>Bem-vindo à nossa incrível Loja Virtual!</p>
+{% extends "ecommerce/base_padrao.html" %}
+{% load static %}
+
+{% block title %}Home - WareShop{% endblock %} 
+
+{% block content %}
+    <div class="hero-section">
+        <h1>💻WareShop💻</h1>
+        <p>Um mundo de opções ao seu alcance</p>
+        <a href="{% url 'lista_produtos' %}" class="call-to-action-btn">Explorar Produtos</a> 
+    </div>
+
+    <hr>
+
+    <h2>Sugestões para Você:</h2>
+    <div class="product-grid"> 
+        {% for produto in produtos_sugestao %}
+        <div class="product-card">
+            {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+            {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="Sem imagem" class="product-image">
+            {% endif %}
+            
+            <div class="product-info">
+                <h3 class="product-name">{{ produto.nome }}</h3>
+                <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+                <p class="product-description">{{ produto.descricao|truncatechars:70 }}</p>
+                
+                <form action="{% url 'adicionar_carrinho' produto.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-cart-btn">Adicionar ao Carrinho</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+            <p>Nenhuma sugestão de produto disponível no momento.</p>
+        {% endfor %}
+    </div>
+
 {% endblock %}

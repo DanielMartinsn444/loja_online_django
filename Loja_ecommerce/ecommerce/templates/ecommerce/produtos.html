@@ -1,27 +1,30 @@
 {% extends "ecommerce/base_padrao.html" %}
-
-{%block title%}Nossos Produtos{% endblock %}
+{% load static %} 
+{% block title %}Nossos Produtos{% endblock %}
 
 {% block content %}
-    <h1>Lista de Produtos</h1>
-    {% if produtos %}
-        <ul>
-            {% for produto in produtos %}
-            <li>
-                <h2>{{produto.nome}}</h2>
-                <p>Preço: R$ {{produto.preco}}</p>
-                <p>Estoque: {{produto.estoque}}</p>
-                {% if produto.imagem %}
-                    <img src="{{produto.imagem.url}}" alt= "{{produto.nome}}" witdh= 150>
-                {% endif %}
-                <p>{{produto.descricao}}</p>
-                 <form action="{% url 'adicionar_carrinho' produto.id %}" method="post">
-                    {% csrf_token %} 
-                <button>Adicionar ao carrinho</button>
-            </li>
+    <h1>Lista de Produtos:</h1>
+
+    <div class="product-grid"> 
+        {% for produto in produtos %}
+        <div class="product-card">
+            {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-image">
+            {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="Sem imagem" class="product-image"> 
+            {% endif %}
+            <div class="product-info">
+                <h2 class="product-name">{{ produto.nome }}</h2>
+                <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+                <p class="product-description">{{ produto.descricao|truncatechars:70 }}</p>
+                <form action="{% url 'adicionar_carrinho' produto.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-cart-btn">Adicionar ao Carrinho</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+            <p>Nenhum produto disponível no momento.</p>
         {% endfor %}
-    </ul>
-{% else %}
-    <p>Nenhum produto foi cadastrado.</p>
-{% endif %}
+    </div>
 {% endblock %}

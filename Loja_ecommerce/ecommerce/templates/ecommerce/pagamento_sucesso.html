@@ -1,0 +1,12 @@
+{# ecommerce/templates/ecommerce/pagamento_sucesso.html #}
+{% extends "ecommerce/base_padrao.html" %}
+{% block title %}Pagamento Concluído!{% endblock %}
+
+{% block content %}
+    <div class="success-container" style="text-align: center; padding: 50px;">
+        <h1>🎉 Pagamento Realizado com Sucesso! 🎉</h1>
+        <p>Obrigado pela sua compra na WareShop. Seu pedido está a caminho!</p>
+        <p>Você receberá um e-mail de confirmação em breve.</p>
+        <a href="{% url 'lista_produtos' %}" class="call-to-action-btn" style="margin-top: 30px;">Continuar Comprando</a>
+    </div>
+{% endblock %}
