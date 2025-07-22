@@ -4,7 +4,7 @@ Este é um projeto de e-commerce desenvolvido com o framework Django, projetado 
 
 ## Visão Geral do Projeto
 
-A **Loja Online Django** é uma aplicação web que simula um ambiente de e-commerce, permitindo que usuários naveguem por produtos, adicionem itens ao carrinho e gerenciem suas contas. O projeto foi construído com foco em boas práticas de desenvolvimento, modularidade e responsividade, garantindo uma experiência de usuário fluida tanto em desktops quanto em dispositivos móveis.
+A **Wareshop** é uma aplicação web que simula um ambiente de e-commerce, permitindo que usuários naveguem por produtos, adicionem itens ao carrinho e gerenciem suas contas. O projeto foi construído com foco em boas práticas de desenvolvimento, modularidade e responsividade, garantindo uma experiência de usuário fluida tanto em desktops quanto em dispositivos móveis.
 
 A interface principal apresenta um design limpo e intuitivo, com destaque para a seção de "Sugestões para Você", que inicialmente exibe "Nenhuma sugestão de produto disponível no momento" em um ambiente recém-implantado, como pode ser visto na imagem abaixo:
 
