@@ -24,15 +24,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-STRIPE_PUBLISHABLE_KEY= "pk_test_51Rj5uJFwDyscJvCmyvpLGaiXqZrChOXfc2QWrbiaql2BYBaVETLqzZTRCj1NOWFz7hTreFW4v0XThndYR23sXL9900HJQdrGg1"
-STRIPE_SECRET_KEY= "sk_test_51Rj5uJFwDyscJvCmezFBy446ThlUg7J7uwHuqj85QvopLoE3HDj7NQdpYn4mnqUCbDVWmpU3WAQSLLpe4pllNir900dRR8Sobp"
+STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
 SECRET_KEY = config("SECRET_KEY")
 
 stripe.api_key= STRIPE_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
 
 
 # Application definition
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -129,6 +130,9 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
